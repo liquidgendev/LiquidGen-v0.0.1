@@ -1,0 +1,50 @@
+# Node
+node_modules/
+npm-debug.log*
+yarn-error.log
+pnpm-lock.yaml
+package-lock.json
+
+# Build outputs
+dist/
+build/
+.out/
+public/build/
+
+# Local env
+.env
+.env.local
+.env.*.local
+
+# Editor/OS
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+Thumbs.db
+.DS_Store
+
+# Logs
+logs/
+*.log
+
+# macOS
+.AppleDouble
+.LSOverride
+
+# Windows
+ehthumbs.db
+Desktop.ini
+
+# Misc
+coverage/
+.cache/
+
+# Server
+server/node_modules/
+server/.env
+
+# VS Code workspace
+*.code-workspace

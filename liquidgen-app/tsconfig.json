@@ -1,0 +1,8 @@
+{
+  "extends": "react-scripts/tsconfig.json",
+  "compilerOptions": {
+    "isolatedModules": true,
+    "esModuleInterop": true,
+    "jsx": "react-jsx"
+  }
+}
