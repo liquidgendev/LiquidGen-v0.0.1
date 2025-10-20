@@ -1,0 +1,28 @@
+[package]
+name = "liquidgen-server"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+tokio = { version = "1", features = ["macros", "rt-multi-thread"] }
+axum = { version = "0.7", features = ["json"] }
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+tracing = "0.1"
+tracing-subscriber = "0.3"
+solana-client = "2.1.0"
+solana-sdk = "2.1.0"
+solana-program = "2.1.0"
+spl-token = { version = "8.0.0", default-features = false }
+anyhow = "1.0"
+base64 = "0.21"
+tokio-util = "0.7.16"
+dotenvy = "0.15"
+parking_lot = "0.12"
+reqwest = { version = "0.11", features = ["json","rustls-tls"] }
+dashmap = "5.4"
+governor = { version = "0.4", features = ["future", "dashmap"] }
+hmac = "0.12"
+sha2 = "0.10"
+tokio-retry = "0.4"
+

@@ -1,0 +1,12 @@
+/* Minimal base styles to make the Vite React mount look reasonable */
+html, body, #root { height: 100%; margin: 0; padding: 0; }
+body { font-family: Roboto, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial; background: linear-gradient(#f8fafc,#ffffff); }
+
+/* Simple utility replacements for a few classes used in index.jsx */
+.min-h-screen { min-height: 100vh; }
+.bg-white { background: white; }
+.p-6 { padding: 1.5rem; }
+.rounded-2xl { border-radius: 1rem; }
+
+/* Keep the rest of the Tailwind-like class names harmless */
+* { box-sizing: border-box; }

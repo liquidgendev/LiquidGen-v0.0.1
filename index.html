@@ -1,0 +1,720 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>LiquidGen - Devnet prototype (Vite)</title>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
+</html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LiquidGen - Liquidity for Users, Teams, and Blockchains on Solana</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap');
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #001f3f; /* Deep ocean blue */
+            color: #ffffff;
+            line-height: 1.6;
+            overflow-y: hidden; /* No initial scroll */
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        header {
+            background: linear-gradient(135deg, #0074d9, #001f3f); /* Blue water gradient */
+            padding: 60px 20px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+        header::before {
+            content: '';
+            position: absolute;
+            bottom: -50px;
+            left: 0;
+            width: 100%;
+            height: 100px;
+            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 120" preserveAspectRatio="none"><path d="M0,0V46.29c47.79,22.2,103.59,32.17,158,28,70.36-5.37,136.33-33.31,206.8-37.5C438.64,32.43,512.34,53.67,583,72.05c69.27,18,138.3,24.88,209.4,13.08,36.15-6,69.85-17.84,104.45-29.34C989.49,25,1113-14.29,1200,52.47V0Z" opacity=".25" fill="#0074d9"></path><path d="M0,0V15.81C13,36.92,27.64,56.86,47.69,72.05,99.41,111.27,165,111.16,217.43,88.73c47.13-20.1,87.74-13.62,130.57-7.06,59.87,9.1,117.05,7.69,175.64-20.49,57.88-27.64,116.49-34.43,176.06-29.84,59.63,4.59,118.17,38.7,171,69.94,45.91,26.9,90.45,35.62,138,27.09,54-9.8,105.47-49.82,158-28V0H0Z" opacity=".5" fill="#0074d9"></path><path d="M0,0V5.63C149.93,59,314.09,71.32,475.83,42.57c43-7.64,84.23-20.12,127.61-26.46,59-8.63,112.48,12.24,165.56,35.4C827.93,77.22,886,95.24,951.2,90c86.53-7,172.46-45.71,248.8-84.81V0Z" fill="#0074d9"></path></svg>') repeat-x;
+            animation: wave 10s linear infinite;
+        }
+        @keyframes wave {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-1200px); }
+        }
+        header h1 {
+            font-size: 3em;
+            margin: 0;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+        header img.logo {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            margin-bottom: 15px;
+            border: 3px solid #ffffff;
+            box-shadow: 0 0 15px rgba(255,255,255,0.5);
+        }
+        header p {
+            font-size: 1.4em;
+            margin: 10px 0;
+        }
+        header .slogan {
+            font-size: 1.2em;
+            font-style: italic;
+            color: #add8e6; /* Light blue */
+        }
+        .cta-button {
+            background-color: #00bfff; /* Bright aqua */
+            color: #001f3f;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.2em;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            margin-top: 20px;
+            transition: background-color 0.3s, transform 0.3s, box-shadow 0.3s;
+            box-shadow: 0 4px 10px rgba(0,191,255,0.3);
+        }
+        .cta-button:hover {
+            background-color: #87ceeb;
+            transform: translateY(-5px);
+            box-shadow: 0 6px 15px rgba(0,191,255,0.5);
+        }
+        main {
+            flex-grow: 1;
+            overflow-y: auto;
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+            width: 100%;
+        }
+        section {
+            margin-bottom: 20px;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.5s ease-out, transform 0.5s ease-out;
+        }
+        section.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .accordion-section {
+            background-color: #003366;
+            color: #fff;
+            cursor: pointer;
+            padding: 15px;
+            width: 100%;
+            border: none;
+            text-align: left;
+            outline: none;
+            font-size: 1.5em;
+            transition: 0.4s;
+            margin-bottom: 10px;
+            border-radius: 10px;
+            border: 1px solid #0074d9;
+        }
+        .accordion-section:hover {
+            background-color: rgba(0, 115, 217, 0.4);
+        }
+        .panel-section {
+            padding: 0 15px;
+            background-color: #001f3f;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease-out;
+            border-radius: 0 0 10px 10px;
+            border: 1px solid #0074d9;
+            border-top: none;
+        }
+        h2 {
+            text-align: center;
+            font-size: 2.5em;
+            margin-bottom: 30px;
+            color: #add8e6;
+        }
+        h2::after {
+            content: '';
+            display: block;
+            width: 80px;
+            height: 3px;
+            background-color: #00bfff;
+            margin: 15px auto 0;
+        }
+        .feature-grid, .steps-grid, .updates-grid, .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+        }
+        .feature, .step, .update-card, .dashboard-card {
+            background-color: rgba(0, 115, 217, 0.2);
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            transition: transform 0.3s;
+            border: 1px solid #0074d9;
+        }
+        .feature:hover, .step:hover, .update-card:hover, .dashboard-card:hover {
+            transform: scale(1.05);
+        }
+        .feature i, .step i {
+            font-size: 2.5em;
+            color: #00bfff;
+            margin-bottom: 15px;
+        }
+        .feature h3, .step h3 {
+            font-size: 1.8em;
+            margin-bottom: 10px;
+            color: #add8e6;
+        }
+        /* Infographics SVG */
+        .infographic {
+            text-align: center;
+            margin: 20px 0;
+        }
+        .infographic svg {
+            max-width: 100%;
+            height: auto;
+        }
+        /* Water drop SVG example */
+        .water-drop {
+            fill: #00bfff;
+        }
+        /* Progress bar for dashboard */
+        .progress-bar {
+            background-color: #001f3f;
+            border-radius: 20px;
+            height: 15px;
+            margin-top: 10px;
+            overflow: hidden;
+        }
+        .progress-fill {
+            background-color: #00bfff;
+            height: 100%;
+            width: 0;
+            transition: width 2s ease-in-out;
+        }
+        .dashboard-button {
+            background-color: #00bfff;
+            color: #001f3f;
+            padding: 8px 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 15px;
+            transition: background-color 0.3s;
+        }
+        .dashboard-button:hover {
+            background-color: #87ceeb;
+        }
+        /* Update Card */
+        .update-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        .update-header img {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+        .update-header h4 {
+            font-size: 1.1em;
+            color: #add8e6;
+        }
+        .update-header p {
+            font-size: 0.8em;
+            color: #87ceeb;
+        }
+        .update-content {
+            margin-bottom: 10px;
+        }
+        .update-engagement {
+            font-size: 0.7em;
+            color: #87ceeb;
+        }
+        /* Accordion for FAQ */
+        .accordion {
+            background-color: rgba(0, 115, 217, 0.2);
+            color: #fff;
+            cursor: pointer;
+            padding: 15px;
+            width: 100%;
+            border: none;
+            text-align: left;
+            outline: none;
+            font-size: 1.1em;
+            transition: 0.4s;
+            margin-bottom: 8px;
+            border-radius: 8px;
+            border: 1px solid #0074d9;
+        }
+        .accordion:hover {
+            background-color: rgba(0, 115, 217, 0.4);
+        }
+        .panel {
+            padding: 0 15px;
+            background-color: #001f3f;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease-out;
+            border-radius: 0 0 8px 8px;
+            border: 1px solid #0074d9;
+            border-top: none;
+        }
+        /* Newsletter */
+        #newsletter form {
+            max-width: 500px;
+            margin: 0 auto;
+        }
+        #newsletter input[type="email"] {
+            padding: 12px;
+            width: 65%;
+            border: none;
+            border-radius: 50px 0 0 50px;
+            font-size: 1em;
+            background-color: #003366;
+            color: #fff;
+        }
+        #newsletter button {
+            padding: 12px 25px;
+            border: none;
+            background-color: #00bfff;
+            color: #001f3f;
+            border-radius: 0 50px 50px 0;
+            font-size: 1em;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        #newsletter button:hover {
+            background-color: #87ceeb;
+        }
+        footer {
+            background-color: #000080;
+            padding: 20px;
+            text-align: center;
+            font-size: 0.9em;
+            flex-shrink: 0;
+        }
+        footer a {
+            color: #00bfff;
+            text-decoration: none;
+            margin: 0 8px;
+        }
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.8);
+            justify-content: center;
+            align-items: center;
+        }
+        .modal-content {
+            background-color: #001f3f;
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+            max-width: 400px;
+            animation: fadeIn 0.5s;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.5);
+            border: 1px solid #0074d9;
+        }
+        @keyframes fadeIn {
+            from {opacity: 0; transform: scale(0.9);}
+            to {opacity: 1; transform: scale(1);}
+        }
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 24px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .close:hover {
+            color: #fff;
+        }
+        .coming-soon {
+            font-size: 1.8em;
+            margin: 15px 0;
+            color: #00bfff;
+        }
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 2.5em;
+            }
+            header p {
+                font-size: 1.2em;
+            }
+            .accordion-section {
+                font-size: 1.3em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <img src="https://pbs.twimg.com/profile_images/1935477764032765952/VocUC_wB.jpg" alt="LiquidGen Logo" class="logo">
+        <h1>LiquidGen</h1>
+        <p class="slogan">We are liquidity for users, teams, and blockchains! 💪</p>
+        <p>Revolutionizing DeFi Launches on Solana with Fair Allocations and Yield-Powered Price Floors. *TOKEN NOT YET AVAILABLE*</p>
+        <button class="cta-button" onclick="showModal('Launch App Coming Soon! Sign up for early access below.')">Dive into the App</button>
+    </header>
+
+    <main>
+        <button class="accordion-section">Our Vision: Flowing Liquidity for All</button>
+        <div class="panel-section">
+            <div class="infographic">
+                <svg width="200" height="200" viewBox="0 0 200 200">
+                    <circle cx="100" cy="100" r="80" fill="none" stroke="#00bfff" stroke-width="10" />
+                    <path d="M100 20 Q 140 60, 100 100 Q 60 140, 100 180" fill="none" stroke="#add8e6" stroke-width="8" />
+                    <text x="100" y="105" fill="#ffffff" text-anchor="middle" font-size="20">Liquidity</text>
+                </svg>
+            </div>
+            <p style="text-align: center; font-size: 1.2em; max-width: 800px; margin: 0 auto;">Like a vast ocean connecting ecosystems, LiquidGen powers fair DeFi launches on Solana. Users lock yield-earning LP tokens to earn allocations, while yields flow to support new projects—creating unbreakable price floors and sustainable growth. Simple, transparent, and fluid for investors, teams, devs, and retail alike.</p>
+        </div>
+
+        <button class="accordion-section">How the Liquidity Flows</button>
+        <div class="panel-section">
+            <div class="steps-grid">
+                <div class="step" onclick="showModal('Step 1 Details Coming Soon!')">
+                    <i class="fas fa-tint"></i>
+                    <h3>Step 1: Select Your Stream</h3>
+                    <p>Choose SOL-LQ for double rewards (with token burns) or SOL-USD for standard yield redirection to buybacks—easy entry into the flow.</p>
+                </div>
+                <div class="step" onclick="showModal('Step 2 Details Coming Soon!')">
+                    <i class="fas fa-water"></i>
+                    <h3>Step 2: Lock & Generate Yield</h3>
+                    <p>Deposit any amount with flexible tiers (3-24 months). Watch yields automatically redirect to fuel launches, like rivers feeding the ocean.</p>
+                </div>
+                <div class="step" onclick="showModal('Step 3 Details Coming Soon!')">
+                    <i class="fas fa-vote-yea"></i>
+                    <h3>Step 3: Vote & Claim Rewards</h3>
+                    <p>Use your stake to vote on projects. Claim fair pro-rata allocations (up to 3% cap)—ensuring everyone gets a share of the tide.</p>
+                </div>
+                <div class="step" onclick="showModal('Step 4 Details Coming Soon!')">
+                    <i class="fas fa-anchor"></i>
+                    <h3>Step 4: Build Unbreakable Floors</h3>
+                    <p>Yields power buybacks and liquidity adds, creating strong support—even if markets are calm. Liquidity that never dries up.</p>
+                </div>
+            </div>
+            <div class="infographic">
+                <svg width="300" height="100" viewBox="0 0 300 100">
+                    <path d="M0 50 Q 75 0, 150 50 Q 225 100, 300 50" fill="none" stroke="#00bfff" stroke-width="5" />
+                    <circle cx="150" cy="50" r="10" class="water-drop" />
+                    <text x="150" y="80" fill="#add8e6" text-anchor="middle" font-size="14">Flow of Yields</text>
+                </svg>
+            </div>
+        </div>
+
+        <button class="accordion-section">Key Currents of LiquidGen</button>
+        <div class="panel-section">
+            <div class="feature-grid">
+                <div class="feature" onclick="showModal('Fair Allocations Coming Soon!')">
+                    <i class="fas fa-balance-scale"></i>
+                    <h3>Fair Allocations</h3>
+                    <p>Pro-rata shares with 3% wallet caps, anti-Sybil tech, and whale protections—equitable flow for all participants.</p>
+                </div>
+                <div class="feature" onclick="showModal('Yield Redirection Coming Soon!')">
+                    <i class="fas fa-redo-alt"></i>
+                    <h3>Yield Redirection</h3>
+                    <p>Auto-harvest from farms, LQ burns, and token buybacks—deflationary mechanics that keep the ecosystem vibrant.</p>
+                </div>
+                <div class="feature" onclick="showModal('Flexible Locks Coming Soon!')">
+                    <i class="fas fa-clock"></i>
+                    <h3>Flexible Locks</h3>
+                    <p>Tiered options with reward multipliers; early exits with penalties funding grants—like adjustable valves in a water system.</p>
+                </div>
+                <div class="feature" onclick="showModal('Community Governance Coming Soon!')">
+                    <i class="fas fa-users"></i>
+                    <h3>Community Governance</h3>
+                    <p>Vote on launches, stake LQ for revenue, influence upgrades—decentralized control over the protocol's direction.</p>
+                </div>
+                <div class="feature" onclick="showModal('Dev Tools Coming Soon!')">
+                    <i class="fas fa-tools"></i>
+                    <h3>Dev Tools</h3>
+                    <p>SDKs, multi-chain bridges, auto-bootstraps—tools to integrate and build on our liquidity infrastructure.</p>
+                </div>
+                <div class="feature" onclick="showModal('Security First Coming Soon!')">
+                    <i class="fas fa-shield-alt"></i>
+                    <h3>Security First</h3>
+                    <p>Audited contracts, vetted launches, on-chain oracles—crystal-clear waters free from risks.</p>
+                </div>
+            </div>
+            <div class="infographic">
+                <svg width="200" height="200" viewBox="0 0 200 200">
+                    <circle cx="100" cy="100" r="90" fill="none" stroke="#00bfff" stroke-width="5" stroke-dasharray="10 5" />
+                    <path d="M100 10 L100 190" fill="none" stroke="#add8e6" stroke-width="4" />
+                    <path d="M10 100 L190 100" fill="none" stroke="#add8e6" stroke-width="4" />
+                    <text x="100" y="105" fill="#ffffff" text-anchor="middle" font-size="18">Key Currents</text>
+                </svg>
+            </div>
+        </div>
+
+        <button class="accordion-section">Preview the Flow: Mock Dashboard</button>
+        <div class="panel-section">
+            <p style="text-align: center; font-size: 1.2em; max-width: 800px; margin: 0 auto 30px;">Experience how simple it is to manage your liquidity—track locks, yields, and claims in one fluid interface.</p>
+            <div class="dashboard-grid">
+                <div class="dashboard-card">
+                    <h4>Locked Amount</h4>
+                    <p>500 SOL-LQ</p>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 75%;"></div>
+                    </div>
+                    <p>75% to Maturity</p>
+                </div>
+                <div class="dashboard-card">
+                    <h4>Effective Stake</h4>
+                    <p>1000 (2x Boost)</p>
+                    <button class="dashboard-button" onclick="alert('Mock: Boost applied successfully!')">Apply Boost</button>
+                </div>
+                <div class="dashboard-card">
+                    <h4>Accrued Yield</h4>
+                    <p>25 SOL</p>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 50%;"></div>
+                    </div>
+                    <p>Redirected to Buybacks</p>
+                </div>
+                <div class="dashboard-card">
+                    <h4>Allocation Claims</h4>
+                    <p>2.5% Available</p>
+                    <button class="dashboard-button" onclick="alert('Mock: Allocation claimed! Check your wallet.')">Claim Now</button>
+                </div>
+                <div class="dashboard-card">
+                    <h4>Upcoming Votes</h4>
+                    <p>Project X Launch</p>
+                    <button class="dashboard-button" onclick="alert('Mock: Vote cast for Project X!')">Vote Yes</button>
+                </div>
+                <div class="dashboard-card">
+                    <h4>Total TVL</h4>
+                    <p>$1,000,000</p>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 90%;"></div>
+                    </div>
+                    <p>Protocol Stats</p>
+                </div>
+            </div>
+            <div class="infographic">
+                <svg width="250" height="150" viewBox="0 0 250 150">
+                    <rect x="50" y="50" width="150" height="50" fill="none" stroke="#00bfff" stroke-width="5" />
+                    <path d="M125 50 V 0" fill="none" stroke="#add8e6" stroke-width="4" />
+                    <circle cx="125" cy="20" r="15" class="water-drop" />
+                    <text x="125" y="80" fill="#ffffff" text-anchor="middle" font-size="16">Dashboard Flow</text>
+                </svg>
+            </div>
+        </div>
+
+        <button class="accordion-section">Latest Waves from X</button>
+        <div class="panel-section">
+            <p style="text-align: center; font-size: 1.2em; max-width: 800px; margin: 0 auto 30px;">Stay in the current with @GenLiquid for updates, insights, and community vibes.</p>
+            <div class="updates-grid">
+                <!-- Truncated for brevity, add all updates as before -->
+                <div class="update-card">
+                    <div class="update-header">
+                        <img src="https://pbs.twimg.com/profile_images/1935477764032765952/VocUC_wB.jpg" alt="LiquidGen Avatar">
+                        <div>
+                            <h4>LiquidGen - @GenLiquid</h4>
+                            <p>Sun, 19 Oct 2025 05:05:57 GMT</p>
+                        </div>
+                    </div>
+                    <div class="update-content">
+                        <p>“Money comes and goes.”</p>
+                    </div>
+                    <div class="update-engagement">
+                        <span>Likes: 0 | Reposts: 0 | Replies: 0 | Views: 5</span>
+                    </div>
+                </div>
+                <!-- Add other updates similarly -->
+            </div>
+            <div class="infographic">
+                <svg width="200" height="100" viewBox="0 0 200 100">
+                    <path d="M0 50 Q 50 0, 100 50 Q 150 100, 200 50" fill="none" stroke="#00bfff" stroke-width="5" />
+                    <text x="100" y="70" fill="#add8e6" text-anchor="middle" font-size="14">Social Waves</text>
+                </svg>
+            </div>
+        </div>
+
+        <button class="accordion-section">Our Liquidity Roadmap</button>
+        <div class="panel-section">
+            <div class="steps-grid">
+                <div class="step" onclick="showModal('Q4 2025 Coming Soon!')">
+                    <i class="fas fa-rocket"></i>
+                    <h3>Q4 2025: MVP Launch</h3>
+                    <p>Devnet prototype with core locking and allocations. Community testing.</p>
+                </div>
+                <div class="step" onclick="showModal('Q1 2026 Coming Soon!')">
+                    <i class="fas fa-cogs"></i>
+                    <h3>Q1 2026: Beta Features</h3>
+                    <p>Yield automation, voting, and anti-abuse measures on testnet.</p>
+                </div>
+                <div class="step" onclick="showModal('Q2 2026 Coming Soon!')">
+                    <i class="fas fa-globe"></i>
+                    <h3>Q2 2026: Mainnet</h3>
+                    <p>Full launch with $LQ token, governance, and partnerships.</p>
+                </div>
+                <div class="step" onclick="showModal('Ongoing Expansions Coming Soon!')">
+                    <i class="fas fa-expand-arrows-alt"></i>
+                    <h3>Ongoing: Expansions</h3>
+                    <p>Multi-chain, new LP pairs, and ecosystem grants.</p>
+                </div>
+            </div>
+            <div class="infographic">
+                <svg width="300" height="100" viewBox="0 0 300 100">
+                    <line x1="50" y1="50" x2="250" y2="50" stroke="#00bfff" stroke-width="5" />
+                    <circle cx="50" cy="50" r="10" class="water-drop" />
+                    <circle cx="150" cy="50" r="10" class="water-drop" />
+                    <circle cx="250" cy="50" r="10" class="water-drop" />
+                    <text x="150" y="80" fill="#add8e6" text-anchor="middle" font-size="14">Roadmap Timeline</text>
+                </svg>
+            </div>
+        </div>
+
+        <button class="accordion-section">Common Questions About the Flow</button>
+        <div class="panel-section">
+            <button class="accordion">What is LiquidGen?</button>
+            <div class="panel">
+                <p>LiquidGen is your gateway to fair DeFi on Solana—lock LP tokens, earn project allocations, and let yields build strong price supports. It's liquidity that works for everyone.</p>
+            </div>
+            <button class="accordion">How do locks work?</button>
+            <div class="panel">
+                <p>Choose your tier (short or long-term), deposit LPs, and earn rewards. Flexible, with options for early exit—simple as turning on a tap.</p>
+            </div>
+            <button class="accordion">Is it secure?</button>
+            <div class="panel">
+                <p>Absolutely: Audited, anti-fraud measures, and transparent operations—like clear, flowing water.</p>
+            </div>
+            <button class="accordion">When can I join?</button>
+            <div class="panel">
+                <p>Subscribe below for early access as we roll out on devnet and beyond!</p>
+            </div>
+            <div class="infographic">
+                <svg width="150" height="200" viewBox="0 0 150 200">
+                    <path d="M75 0 Q 0 100, 75 200 Q 150 100, 75 0" class="water-drop" />
+                    <text x="75" y="105" fill="#001f3f" text-anchor="middle" font-size="20">FAQ</text>
+                </svg>
+            </div>
+        </div>
+
+        <button class="accordion-section">Join the Current</button>
+        <div class="panel-section">
+            <p style="text-align: center; font-size: 1.2em; margin: 0 auto 20px;">Subscribe for updates, early access, and exclusive airdrop info. Ride the wave with LiquidGen!</p>
+            <form onsubmit="handleSubscribe(event)">
+                <input type="email" placeholder="Enter your email" required>
+                <button type="submit">Subscribe</button>
+            </form>
+            <div class="infographic">
+                <svg width="200" height="100" viewBox="0 0 200 100">
+                    <circle cx="100" cy="50" r="40" fill="none" stroke="#00bfff" stroke-width="5" />
+                    <path d="M100 10 V 90" fill="none" stroke="#add8e6" stroke-width="4" />
+                    <text x="100" y="55" fill="#ffffff" text-anchor="middle" font-size="16">Join Us</text>
+                </svg>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 LiquidGen. All rights reserved.</p>
+        <p><a href="#privacy">Privacy Policy</a> | <a href="#terms">Terms of Service</a></p>
+        <p>Follow the flow: <a href="https://x.com/GenLiquid"><i class="fab fa-x-twitter"></i> @GenLiquid</a> | <a href="https://discord.gg/liquidgen">Join Discord</a></p>
+    </footer>
+
+    <!-- Modal -->
+    <div id="comingSoonModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="hideModal()">&times;</span>
+            <p class="coming-soon">Coming Soon...</p>
+            <p id="modalMessage"></p>
+        </div>
+    </div>
+
+    <script>
+        // Accordion for sections
+        const accSections = document.getElementsByClassName("accordion-section");
+        for (let i = 0; i < accSections.length; i++) {
+            accSections[i].addEventListener("click", function() {
+                this.classList.toggle("active");
+                const panel = this.nextElementSibling;
+                if (panel.style.maxHeight) {
+                    panel.style.maxHeight = null;
+                } else {
+                    panel.style.maxHeight = panel.scrollHeight + "px";
+                }
+                document.body.style.overflowY = panel.style.maxHeight ? 'auto' : 'hidden'; // Enable scroll when expanded
+            });
+        }
+
+        // Accordion for FAQ (nested)
+        const acc = document.getElementsByClassName("accordion");
+        for (let i = 0; i < acc.length; i++) {
+            acc[i].addEventListener("click", function() {
+                this.classList.toggle("active");
+                const panel = this.nextElementSibling;
+                if (panel.style.maxHeight) {
+                    panel.style.maxHeight = null;
+                } else {
+                    panel.style.maxHeight = panel.scrollHeight + "px";
+                }
+                // Adjust parent panel height if nested
+                const parentPanel = this.closest('.panel-section');
+                if (parentPanel) {
+                    parentPanel.style.maxHeight = parentPanel.scrollHeight + "px";
+                }
+            });
+        }
+
+        // Modal functions
+        function showModal(message) {
+            document.getElementById('modalMessage').textContent = message;
+            document.getElementById('comingSoonModal').style.display = 'flex';
+        }
+        function hideModal() {
+            document.getElementById('comingSoonModal').style.display = 'none';
+        }
+        window.onclick = function(event) {
+            const modal = document.getElementById('comingSoonModal');
+            if (event.target === modal) {
+                hideModal();
+            }
+        };
+
+        // Newsletter subscribe (demo)
+        function handleSubscribe(event) {
+            event.preventDefault();
+            alert('Thank you for subscribing! You\'ll hear from us soon.');
+        }
+
+        // Animate progress bars
+        window.addEventListener('load', () => {
+            const fills = document.querySelectorAll('.progress-fill');
+            fills.forEach(fill => {
+                const width = fill.style.width;
+                fill.style.width = '0';
+                setTimeout(() => {
+                    fill.style.width = width;
+                }, 500);
+            });
+        });
+    </script>
+</body>
+</html>
