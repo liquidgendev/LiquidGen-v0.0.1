@@ -1,0 +1,84 @@
+name: Frontend CI
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - 'liquidgen-app/**'
+      - '.github/workflows/frontend.yml'
+  pull_request:
+    branches: [ main ]
+    paths:
+      - 'liquidgen-app/**'
+      - '.github/workflows/frontend.yml'
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'npm'
+        cache-dependency-path: 'liquidgen-app/package-lock.json'
+
+    - name: Install Dependencies
+      run: |
+        cd liquidgen-app
+        npm ci
+
+    - name: Type Check
+      run: |
+        cd liquidgen-app
+        npm run typecheck
+
+    - name: Lint
+      run: |
+        cd liquidgen-app
+        npm run lint
+
+    - name: Build
+      run: |
+        cd liquidgen-app
+        npm run build
+
+    - name: Cache Build
+      uses: actions/cache@v3
+      with:
+        path: liquidgen-app/dist
+        key: ${{ runner.os }}-build-${{ github.sha }}
+
+  security:
+    needs: build-and-test
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'npm'
+        cache-dependency-path: 'liquidgen-app/package-lock.json'
+
+    - name: Install Dependencies
+      run: |
+        cd liquidgen-app
+        npm ci
+
+    - name: Run Security Audit
+      run: |
+        cd liquidgen-app
+        npm audit
+
+    - name: Check Dependencies
+      uses: snyk/actions/node@master
+      env:
+        SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+      with:
+        args: --severity-threshold=high
